@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import App from "./App";
 
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import Home from "./Pages/Home";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAu9ZB7kEdwu8IHPG7oy3l6x8WPxospEac",
@@ -21,7 +21,7 @@ const analytics = getAnalytics(app);
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Home />
   </React.StrictMode>,
   document.getElementById("root")
 );

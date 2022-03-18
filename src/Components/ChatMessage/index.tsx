@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+import * as S from "./styles";
 export interface IChatMessageProps {
   message: string;
   userId: string;
@@ -5,9 +7,6 @@ export interface IChatMessageProps {
   isOwner: boolean;
   messageId: string;
 }
-
-import { useMemo } from "react";
-import * as S from "./styles";
 
 const ChatMessage = ({ message, userId, time, isOwner }: IChatMessageProps) => {
   const getUserImage = useMemo(() => {
