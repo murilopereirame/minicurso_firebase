@@ -35,7 +35,7 @@ export const AvatarContainer = styled.div`
 `;
 
 export const UserAvatar = styled.img`
-  width: 50px;
+  width: 42px;
   border-radius: 50%;
 `;
 
