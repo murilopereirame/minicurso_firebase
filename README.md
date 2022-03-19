@@ -1,46 +1,216 @@
-# Getting Started with Create React App
+# Code Talk - Introdução ao Firebase
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## **Descrição**
+Olá! Esse repositório foi criado para demonstrar algumas das soluções providas através do serviço da Google, o Firebase.
 
-## Available Scripts
+## **Soluções do Firebase**
+- Authentication
+- Cloud Firestore
+- Cloud Storage
+- Realtime Database
+- Remote Config
 
-In the project directory, you can run:
+## **Como Executar**
+```bash
+  yarn install
+  yarn start
+```
 
-### `yarn start`
+## **Configurações**
+> Essa branch conta com a versão **incompleta** do código, abaixo estão os **snippets** de código e **onde** devem ser colocados para **integrar** as soluções do **Firebase**
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- [ ] Configurar e Inicializar Firebase
+  >src/index.tsx
+  ```js
+  import { initializeApp } from "firebase/app";
+  ```
+  
+  > src/index.tsx - 07:0
+  ```js
+  const firebaseConfig = {
+    apiKey: "",
+    authDomain: "",
+    projectId: "",
+    storageBucket: "",
+    messagingSenderId: "",
+    appId: "",
+    measurementId: "",
+  };
+  initializeApp(firebaseConfig);
+  ```
+- [ ] Codar o getUser
+  > src/Utils/services.ts - 4:0  
+  > **getUser**
+  ```js
+  import { collection, getFirestore, doc, getDoc } from "firebase/firestore";
+  ```
+  ```js
+  const firestore = getFirestore();
+  const usersRef = collection(firestore, "users");
+  const userDoc = await getDoc(doc(usersRef, user.uid));
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+  return userDoc;
+  ```
+- [ ] Codar o login
+  > src/Pages/Home/index.tsx
+  ```js
+  import { GoogleAuthProvider, signInWithPopup, getAuth } from "firebase/auth";
+  import { getUser } from "../../Utils/services";
+  ```
 
-### `yarn test`
+  > src/Pages/Home/index.tsx - 20:3  
+  > **doLogin**
+  ```js
+  const provider = new GoogleAuthProvider();
+  const auth = getAuth();
+  auth.useDeviceLanguage();
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const userDoc = await getUser(result.user);
 
-### `yarn build`
+    if (!userDoc.exists) {
+      alert("Erro ao efetuar login");
+    } else {
+      setUserId(result.user.uid);
+      setShowMessageBox(true);
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+      const userData = userDoc.data();
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+      if (!userData?.complete) {
+        setShowProfile(true);
+      }
+    }
+  } catch (err) {
+    return;
+  }
+  ```
+- [ ] Codar o listener do chat
+  > src/Pages/Home/index.tsx
+  ```js
+  import { ref, getDatabase, onValue, off } from "firebase/database";
+  ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+  > src/Pages/Home/index.tsx - 18:3  
+  > **useEffect**
+  ```js
+  const db = getDatabase();
 
-### `yarn eject`
+  const onValueChange = onValue(ref(db, `/chat`), (snapshot) => {
+    const snapVal = snapshot.val();
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+    setMessages(
+      Object.keys(snapVal).map(function (key, index) {
+        return {
+          message: snapVal[key].message,
+          time: new Date(snapVal[key].time),
+          userId: snapVal[key].userId,
+          messageId: key,
+        } as IChatMessageProps;
+      })
+    );
+  });
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+  return () => off(ref(db, `/chat`), "value", onValueChange);
+  ```
+- [ ] Codar o Profile (Storage e Firestore)
+  > src/Components/Profile/index.tsx
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+  ```js
+  import { ref, getStorage, uploadBytes } from "firebase/storage";
+  import { collection, getFirestore, doc, setDoc } from "firebase/firestore";
+  ```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+  > src/Components/Profile/index.tsx - 28:3  
+  > **handleSubmit**
 
-## Learn More
+  ```js
+  if (name === "") return alert("Preencha o nome");
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+  let isComplete = false;
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+  if (imageFile !== undefined) {
+    const storage = getStorage();
+    const imageRef = ref(storage, `users/${userId}`);
+    await uploadBytes(imageRef, imageFile);
+    isComplete = true;
+  }
+
+  const firestore = getFirestore();
+  const usersRef = collection(firestore, "users");
+
+  await setDoc(doc(usersRef, userId), {
+    name,
+    complete: isComplete,
+  });
+
+  return onClose();
+  ```
+- [ ] Codar as Regras
+  > src/Components/Rules/index.tsx 
+  ```js
+  import {
+    getRemoteConfig,
+    getString,
+    fetchAndActivate,
+  } from "firebase/remote-config";
+  ```
+
+  > src/Components/Rules/index.tsx - 18:3  
+  > **loadRules**
+  ```js
+  const remoteConfig = getRemoteConfig();
+  await fetchAndActivate(remoteConfig);
+  const remoteRules = getString(remoteConfig, "rules");
+
+  setRules({ __html: remoteRules });
+  ```
+- [ ] Codar o Envio de Mensagens
+  > src/Components/Chat/index.tsx
+  ```js
+  import { update, child, push, getDatabase, ref } from "firebase/database";
+  ```
+  > src/Components/Chat/index.tsx - 15:3  
+  > **sendMessage**
+  ```js
+  if (message === "") return;
+
+  const db = getDatabase();
+  const chatMessage: IChatMessageProps = {
+    message,
+    userId,
+    time: new Date(),
+  };
+  const newPostKey = push(child(ref(db), "chat")).key;
+  const updates: any = {};
+  updates["/chat/" + newPostKey] = chatMessage;
+
+  update(ref(db), updates);
+
+  return setMessage("");
+  ```
+- [ ] Codar o Avatar
+  > src/Components/ChatMessage/index.tsx
+  ```js
+  import { getStorage, ref, getDownloadURL } from "firebase/storage";
+  ```
+  > src/Components/ChatMessage/index.tsx - 15:3  
+  > **getUserImage**
+  ```js
+  const storage = getStorage();
+  const pathReference = ref(storage, `users/${userId}`);
+
+  let imageUrl = "";
+
+  try {
+    imageUrl = await getDownloadURL(pathReference);
+    setUserImage(imageUrl);
+  } catch {
+    setUserImage(
+      "https://ps.w.org/simple-user-avatar/assets/icon-256x256.png?rev=2413146"
+    );
+  }
+  ``` 
+## **Considerações Finais**
+Obrigado por chegar até aqui!  
+Sinta-se a vontade para melhorar o projeto e abrir um PR =)
