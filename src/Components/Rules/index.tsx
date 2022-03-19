@@ -19,8 +19,6 @@ const Rules = ({ show, onClose }: IRulesProps) => {
     const remoteConfig = getRemoteConfig();
     await fetchAndActivate(remoteConfig);
     const remoteRules = getString(remoteConfig, "rules");
-    console.log(remoteConfig);
-    console.log(remoteRules);
 
     setRules({ __html: remoteRules });
   }, []);
