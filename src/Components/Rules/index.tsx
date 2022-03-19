@@ -15,13 +15,7 @@ interface IRulesProps {
 const Rules = ({ show, onClose }: IRulesProps) => {
   const [rules, setRules] = useState({ __html: "" });
 
-  const loadRules = useCallback(async () => {
-    const remoteConfig = getRemoteConfig();
-    await fetchAndActivate(remoteConfig);
-    const remoteRules = getString(remoteConfig, "rules");
-
-    setRules({ __html: remoteRules });
-  }, []);
+  const loadRules = useCallback(async () => {}, []);
 
   useEffect(() => {
     loadRules();

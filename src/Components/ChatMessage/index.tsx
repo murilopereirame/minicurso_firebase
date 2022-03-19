@@ -12,21 +12,7 @@ export interface IChatMessageProps {
 const ChatMessage = ({ message, userId, time, isOwner }: IChatMessageProps) => {
   const [userImage, setUserImage] = useState<string>("");
 
-  const getUserImage = useCallback(async () => {
-    const storage = getStorage();
-    const pathReference = ref(storage, `users/${userId}`);
-
-    let imageUrl = "";
-
-    try {
-      imageUrl = await getDownloadURL(pathReference);
-      setUserImage(imageUrl);
-    } catch {
-      setUserImage(
-        "https://ps.w.org/simple-user-avatar/assets/icon-256x256.png?rev=2413146"
-      );
-    }
-  }, [userId]);
+  const getUserImage = useCallback(async () => {}, [userId]);
 
   useEffect(() => {
     getUserImage();

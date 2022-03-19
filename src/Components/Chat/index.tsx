@@ -12,23 +12,7 @@ interface IChatProps {
 const Chat = ({ messages, showMessageBox, userId }: IChatProps) => {
   const [message, setMessage] = useState<string>("");
 
-  const sendMessage = useCallback(() => {
-    if (message === "") return;
-
-    const db = getDatabase();
-    const chatMessage: IChatMessageProps = {
-      message,
-      userId,
-      time: new Date(),
-    };
-    const newPostKey = push(child(ref(db), "chat")).key;
-    const updates: any = {};
-    updates["/chat/" + newPostKey] = chatMessage;
-
-    update(ref(db), updates);
-
-    return setMessage("");
-  }, [message, userId]);
+  const sendMessage = useCallback(() => {}, [message, userId]);
 
   return (
     <>

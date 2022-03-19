@@ -15,52 +15,9 @@ const Home = () => {
   const [userId, setUserId] = useState<string>("");
   const [messages, setMessages] = useState<IChatMessageProps[]>([]);
 
-  useEffect(() => {
-    const db = getDatabase();
+  useEffect(() => {}, []);
 
-    const onValueChange = onValue(ref(db, `/chat`), (snapshot) => {
-      const snapVal = snapshot.val();
-
-      setMessages(
-        Object.keys(snapVal).map(function (key, index) {
-          return {
-            message: snapVal[key].message,
-            time: new Date(snapVal[key].time),
-            userId: snapVal[key].userId,
-            messageId: key,
-          } as IChatMessageProps;
-        })
-      );
-    });
-
-    return () => off(ref(db, `/chat`), "value", onValueChange);
-  }, []);
-
-  const doLogin = useCallback(async () => {
-    const provider = new GoogleAuthProvider();
-    const auth = getAuth();
-    auth.useDeviceLanguage();
-
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const userDoc = await getUser(result.user);
-
-      if (!userDoc.exists) {
-        alert("Erro ao efetuar login");
-      } else {
-        setUserId(result.user.uid);
-        setShowMessageBox(true);
-
-        const userData = userDoc.data();
-
-        if (!userData?.complete) {
-          setShowProfile(true);
-        }
-      }
-    } catch (err) {
-      return;
-    }
-  }, []);
+  const doLogin = useCallback(async () => {}, []);
 
   return (
     <>

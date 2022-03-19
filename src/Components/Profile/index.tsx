@@ -25,28 +25,12 @@ const Profile = ({ show, userId, onClose }: IProfileProps) => {
     setImageFile(evt.target.files[0]);
   }, []);
 
-  const handleSubmit = useCallback(async () => {
-    if (name === "") return alert("Preencha o nome");
-
-    let isComplete = false;
-
-    if (imageFile !== undefined) {
-      const storage = getStorage();
-      const imageRef = ref(storage, `users/${userId}`);
-      await uploadBytes(imageRef, imageFile);
-      isComplete = true;
-    }
-
-    const firestore = getFirestore();
-    const usersRef = collection(firestore, "users");
-
-    await setDoc(doc(usersRef, userId), {
-      name,
-      complete: isComplete,
-    });
-
-    return onClose();
-  }, [name, onClose, imageFile, userId]);
+  const handleSubmit = useCallback(async () => {}, [
+    name,
+    onClose,
+    imageFile,
+    userId,
+  ]);
 
   return (
     <>
