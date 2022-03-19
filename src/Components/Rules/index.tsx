@@ -1,28 +1,41 @@
+import { useCallback, useEffect, useState } from "react";
+
+import {
+  getRemoteConfig,
+  getString,
+  fetchAndActivate,
+} from "firebase/remote-config";
 import * as S from "./styles";
 
 interface IRulesProps {
   show: boolean;
+  onClose: () => void;
 }
 
-const Rules = ({ show }: IRulesProps) => {
+const Rules = ({ show, onClose }: IRulesProps) => {
+  const [rules, setRules] = useState({ __html: "" });
+
+  const loadRules = useCallback(async () => {
+    const remoteConfig = getRemoteConfig();
+    await fetchAndActivate(remoteConfig);
+    const remoteRules = getString(remoteConfig, "rules");
+    console.log(remoteConfig);
+    console.log(remoteRules);
+
+    setRules({ __html: remoteRules });
+  }, []);
+
+  useEffect(() => {
+    loadRules();
+  }, []);
+
   return (
     <>
       {show && (
         <S.RulesBackground>
           <S.RulesContainer>
-            <S.RulesText>
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry's standard dummy text
-              ever since the 1500s, when an unknown printer took a galley of
-              type and scrambled it to make a type specimen book. It has
-              survived not only five centuries, but also the leap into
-              electronic typesetting, remaining essentially unchanged. It was
-              popularised in the 1960s with the release of Letraset sheets
-              containing Lorem Ipsum passages, and more recently with desktop
-              publishing software like Aldus PageMaker including versions of
-              Lorem Ipsum.
-            </S.RulesText>
-            <S.OkButton>OK</S.OkButton>
+            <S.RulesText dangerouslySetInnerHTML={rules}></S.RulesText>
+            <S.OkButton onClick={onClose}>OK</S.OkButton>
           </S.RulesContainer>
         </S.RulesBackground>
       )}
