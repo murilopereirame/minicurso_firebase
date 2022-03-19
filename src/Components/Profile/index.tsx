@@ -46,7 +46,7 @@ const Profile = ({ show, userId, onClose }: IProfileProps) => {
     });
 
     return onClose();
-  }, [name, profileImage, onClose]);
+  }, [name, onClose, imageFile, userId]);
 
   return (
     <>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { update, child, push, getDatabase, ref } from "firebase/database";
 import ChatMessage, { IChatMessageProps } from "../ChatMessage";
 import * as S from "./styles";

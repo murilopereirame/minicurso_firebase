@@ -12,10 +12,6 @@ export interface IChatMessageProps {
 const ChatMessage = ({ message, userId, time, isOwner }: IChatMessageProps) => {
   const [userImage, setUserImage] = useState<string>("");
 
-  useEffect(() => {
-    getUserImage();
-  }, [userId]);
-
   const getUserImage = useCallback(async () => {
     const storage = getStorage();
     const pathReference = ref(storage, `users/${userId}`);
@@ -31,6 +27,10 @@ const ChatMessage = ({ message, userId, time, isOwner }: IChatMessageProps) => {
       );
     }
   }, [userId]);
+
+  useEffect(() => {
+    getUserImage();
+  }, [userId, getUserImage]);
 
   const getMessageTime = useMemo(() => {
     return `${time.getHours()}:${time.getMinutes()}`;

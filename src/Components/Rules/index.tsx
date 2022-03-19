@@ -27,7 +27,7 @@ const Rules = ({ show, onClose }: IRulesProps) => {
 
   useEffect(() => {
     loadRules();
-  }, []);
+  }, [loadRules]);
 
   return (
     <>

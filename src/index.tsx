@@ -3,7 +3,6 @@ import ReactDOM from "react-dom";
 import GlobalStyles from "./GlobalStyles";
 
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 import Home from "./Pages/Home";
 
 const firebaseConfig = {
@@ -16,8 +15,7 @@ const firebaseConfig = {
   measurementId: "G-C1DHV1TJMN",
 };
 
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+initializeApp(firebaseConfig);
 
 ReactDOM.render(
   <React.StrictMode>
