@@ -26,5 +26,5 @@ jobs:
       with:
         server: ftp.pereiratech.com.br
         username: u558388171
-        password: mrX@10032000
+        password: TOfiNYgyHAgeVO
         local-dir: build/
