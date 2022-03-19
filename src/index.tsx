@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
+import GlobalStyles from "./GlobalStyles";
 
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
@@ -21,6 +21,7 @@ const analytics = getAnalytics(app);
 
 ReactDOM.render(
   <React.StrictMode>
+    <GlobalStyles />
     <Home />
   </React.StrictMode>,
   document.getElementById("root")

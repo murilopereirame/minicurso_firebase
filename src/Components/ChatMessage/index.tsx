@@ -10,10 +10,10 @@ export interface IChatMessageProps {
 
 const ChatMessage = ({ message, userId, time, isOwner }: IChatMessageProps) => {
   const getUserImage = useMemo(() => {
-    return "";
+    return "https://ps.w.org/simple-user-avatar/assets/icon-256x256.png?rev=2413146";
   }, [userId]);
   const getMessageTime = useMemo(() => {
-    return `${time.getHours()}:${time.getMinutes}`;
+    return `${time.getHours()}:${time.getMinutes()}`;
   }, [time]);
 
   return (
@@ -22,8 +22,10 @@ const ChatMessage = ({ message, userId, time, isOwner }: IChatMessageProps) => {
         <S.AvatarContainer>
           <S.UserAvatar src={getUserImage} />
         </S.AvatarContainer>
-        <S.MessageText>{message}</S.MessageText>
-        <S.MessageTime>{getMessageTime}</S.MessageTime>
+        <S.ContentContainer isOwner={isOwner}>
+          <S.MessageText>{message}</S.MessageText>
+          <S.MessageTime>{getMessageTime}</S.MessageTime>
+        </S.ContentContainer>
       </S.MessageContainer>
     </>
   );

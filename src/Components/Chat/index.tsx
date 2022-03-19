@@ -18,7 +18,9 @@ const Chat = ({ messages, showMessageBox }: IChatProps) => {
         {showMessageBox && (
           <S.InputContainer>
             <S.MessageBox></S.MessageBox>
-            <S.SendButton></S.SendButton>
+            <S.SendButton>
+              <i className="material-icons">send</i>
+            </S.SendButton>
           </S.InputContainer>
         )}
       </S.ChatContainer>
